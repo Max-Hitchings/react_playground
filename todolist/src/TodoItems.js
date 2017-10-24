@@ -4,11 +4,27 @@ import React, { Component } from 'react';
 class TodoItems extends React.Component {
   constructor(props, context) {
     super(props, context);
+
+    this.createTasks = this.createTasks.bind(this);
+    this.delete = this.delete.bind(this);
   }
 
   // Turning the list of todo items into JSX elements
+  // Listen to the click event and associate it with the "delete" event handler
   createTasks(item) {
-    return <li key={item.key}>{item.text}</li>
+    return (
+      <li
+        onClick={ (e) => this.delete(item.key, e) }
+        key={item.key}
+      >
+        {item.text}
+      </li>
+    )
+  }
+
+  // Call another "delete" function passed in to this component via props
+  delete(key) {
+    this.props.delete(key);
   }
 
   render() {

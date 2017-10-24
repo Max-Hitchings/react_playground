@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import TodoItems from './TodoItems.js';
+import TodoItems from './TodoItems';
+import './TodoList.css';
 
 
 class TodoList extends React.Component {
@@ -11,17 +12,32 @@ class TodoList extends React.Component {
     };
 
     this.addItem = this.addItem.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+  }
+
+  // Create an array that contains all items except the one user is removing.
+  // To do this we are passing the key from the clicked item here, and we check
+  // this key against all of the items we are storing via the filter method.
+  // The filteredItems array is then set as a new items property on the state
+  // object.
+  deleteItem(key) {
+    var filteredItems = this.state.items.filter(function(item) {
+      return (item.key !== key);
+    });
+
+    this.setState({
+      items: filteredItems
+    })
   }
 
   addItem(e) {
-    // Store the current value of items state object
     var itemArray = this.state.items;
 
     // If input element has some text entered
     if (this._inputElement.value !== "") {
 
-      // Add an object that contain both the entered text and a unique key to
-      // the itemArray
+      // Store the current value of items state with an object that contains
+      // both the entered text and a unique key
       itemArray.unshift(
         {
          text: this._inputElement.value,
@@ -49,15 +65,19 @@ class TodoList extends React.Component {
   // Pass items array as a prop to TodoItems
   render() {
     return (
-      <div className="header">
-        <form onSubmit={this.addItem}>
-          <input
-            ref = { (a) => this._inputElement = a}
-            placeholder="enter task">
-          </input>
-          <button type="Submit">add</button>
-        </form>
-        <TodoItems entries={this.state.items} />
+      <div className="todoListMain">
+        <div className="header">
+          <form onSubmit={this.addItem}>
+            <input
+              ref = { (a) => this._inputElement = a}
+              placeholder="enter task">
+            </input>
+            <button type="Submit">add</button>
+          </form>
+          <TodoItems
+            entries={this.state.items}
+            delete={this.deleteItem} />
+        </div>
       </div>
     );
   }
